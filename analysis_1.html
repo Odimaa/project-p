@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>Odimaa</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/vendor.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Latest compiled and minified CSS -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+
+
+    <!-- script
+    ================================================== -->
+    <script src="js/modernizr.js"></script>
+    <script defer src="js/fontawesome/all.min.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+   
+</head>
+
+<body>
+
+    
+    <header class="s-header">
+
+        <div class="s-header__logo">
+            <a href="index.html">
+                <!-- <img src="images/logo.svg" alt="Homepage"> -->
+            </a>
+        </div>
+
+        <div class="s-header__content">
+    
+            <nav class="s-header__nav-wrap">
+                <ul class="s-header__nav">
+                    <li><a href="index.html" title="Intro" style="text-decoration: none"> Return Home</a></li>
+                   
+                </ul>
+            </nav> <!-- end s-header__nav-wrap -->
+
+ 
+
+        </div> <!-- end header-content -->
+
+
+    </header> <!-- end s-header -->
+ 
+    <!-- about
+    ================================================== -->
+    <section id="services" class="services">
+
+ 
+        <div class="row">
+            <div class="column large-12">
+
+                <div class="section-title" data-num="" data-aos="fade-up">
+                    <h3 class="h6">The Covid19 Pandemic Analysis (My Thought Process)</h3>
+                </div>
+
+            </div>
+
+            <div class="column large-12 w-900-stack s-about__intro-text ">
+                <div class="section-title-2" data-num="" data-aos="fade-up">
+                    <h5>Goal</h5>
+                </div>
+
+                <p class="lead" data-aos="fade-right">
+                   To complete a thorough analysis into the Covid19 pandemic worldwide starting January 2020 till June 2021 and gain insights.
+                   <br> Status: Ongoing
+                </p>
+
+
+                <div class="section-title-2" data-num="" data-aos="fade-up">
+                    <h5>Prepare</h5>
+                </div>
+                <p class="lead pb-3" data-aos="fade-left">
+                    <ul>
+                 <li> Dataset Used:  <a href= https://ourworldindata.org/covid-deaths>here</a></li>
+                  <li>Data was sorted and filtered using excel </li></ul>
+                </p>
+
+                <div class="section-title-2" data-num="" data-aos="fade-up">
+                    <h5>Process</h5>
+                </div>
+                <p class="lead pb-3" data-aos="fade-left">
+                    <ul>
+                 <li>Tools Used: Excel for sorting and filtering and SQL for cleaning and analysis</li>
+                  <li>Cleaning: Removed Null values and extra spaces, Searched for duplicate data, Checked for inconsistent capitalization or misspellings, Removed unwanted data</li></ul>
+                </p>
+
+                <div class="section-title-2" data-num="" data-aos="fade-up">
+                    <h5>Process</h5>
+                </div>
+                <p class="lead pb-3" data-aos="fade-left">
+                    <ul>
+                 <li>Queries and calculations performed</li>
+                </p>
+
+<pre>
+<code class="language-java">
+    --Whole Table
+    SELECT *
+    FROM Capstone_Covid..Death_Covid$
+    ORDER BY 3,4
+    
+    
+    --Select the data to be used and ordering by location and date
+    SELECT  location, Leftdate, continent, total_cases, new_cases, total_deaths, population
+    FROM Capstone_Covid..Death_Covid$
+    order by 1
+    
+    --deaths vs cases
+    --Percentage change of dying if yo get COVID
+    SELECT  location, date, continent, total_cases, total_deaths, (total_deaths/total_cases)*100 as death_rate
+    FROM Capstone_Covid..Death_Covid$
+    WHERE location = 'United States'
+    order by 1
+    
+    --Cases vs population
+    --Percentage case vs population
+    --Shockingly less than 1% percent of Nigerias population have covid19
+    SELECT  location, date, continent, total_cases, population, (total_cases/population)*100 as population_rate
+    FROM Capstone_Covid..Death_Covid$
+    WHERE location = 'Nigeria'
+    order by 1
+    
+    --Countries with the highest Infection Count
+    SELECT  location, population, date, MAX(total_cases) AS Infection_Count, MAX((total_cases/population))*100 AS population_rate
+    FROM Capstone_Covid..Death_Covid$
+    WHERE location != 'World'
+    GROUP BY location,  population, date
+    
+    ORDER BY population_rate DESC
+    
+    
+    --Countries with highest death count per population
+    
+    SELECT  location, MAX(CAST(total_deaths AS int)) AS max_total_deaths
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is not null 
+    GROUP BY location
+    ORDER BY max_total_deaths DESC
+    
+    --death rate by continent
+    SELECT location, MAX(CAST(total_deaths AS int)) AS max_total_deaths
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is null 
+    GROUP BY location
+    ORDER BY max_total_deaths DESC
+    
+    SELECT location,  MAX(CAST(total_cases AS int)) AS Cases ,MAX(CAST(total_deaths AS int)) AS Deaths
+    FROM Capstone_Covid..Death_Covid$
+    WHERE location = 'World'
+    GROUP BY location
+    ORDER BY max_total_deaths DESC
+    
+    
+    SELECT  continent, MAX(CAST(total_deaths AS int)) AS max_total_deaths
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is not null 
+    GROUP BY continent
+    ORDER BY max_total_deaths DESC
+    
+    --deaths vs cases
+    --Percentage change of dying if yo get COVID
+    SELECT location, SUM(new_cases), SUM(cast(new_deaths as int))
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is not null
+    GROUP BY location
+    order by 1,2
+    
+    
+    SELECT location, SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths,
+    SUM(cast(new_deaths as int)) / SUM(new_cases)*100 as death_percent
+    
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is not null
+    GROUP BY location
+    order by 1,2
+    
+    SELECT SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths,
+    SUM(cast(new_deaths as int)) / SUM(new_cases)*100 as death_percent
+    
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is not null
+    order by 1,2
+    
+    --Begin vaccination analysis
+    SELECT dea.continent, dea.location,dea.date, dea.population, vac.new_vaccinations,
+    SUM(CAST(vac.new_vaccinations as int)) OVER (PARTITION BY dea.location Order by dea.location, dea.Date) as Rolling_Vaccinations
+    FROM Capstone_Covid..Death_Covid$ dea
+    JOIN Capstone_Covid..Vaccinations_Covid$ vac
+    ON dea.location = vac.location
+     and dea.date = vac.date
+    
+     where dea.continent is not null and dea.location = 'United States'
+       order by 1,2,3
+    
+    
+    
+    --Use CTE
+    With PopvsVac (Continent, Location,Date, Population,new_vaccinations, Rolling_Vaccinations) 
+    as
+    (
+    SELECT dea.continent, dea.location,dea.date, dea.population, vac.new_vaccinations,
+    SUM(CAST(vac.new_vaccinations as int)) OVER (PARTITION BY dea.location Order by dea.location, dea.Date) as Rolling_Vaccinations
+    FROM Capstone_Covid..Death_Covid$ dea
+    JOIN Capstone_Covid..Vaccinations_Covid$ vac
+    ON dea.location = vac.location
+     and dea.date = vac.date
+    
+     where dea.continent is not null --and dea.location = 'Canada'
+       --order by 1,2,3
+    )
+    --FIND OUT PERCENTAGE VACCINATED
+    SELECT *, (Rolling_Vaccinations/Population)*100
+    FROM PopvsVac
+    
+    
+    --Temp Table
+    
+    DROP Table if exists #PercentVaccinatedPop
+    Create Table #PercentVaccinatedPop
+    ( Continent nvarchar(255),
+      Location nvarchar(255),
+      Date datetime,
+      Population numeric,
+      New_vaccinations numeric,
+      Rolling_vaccinations numeric
+      )
+    
+    
+    Insert into #PercentVaccinatedPop
+    SELECT dea.continent, dea.location,dea.date, dea.population, vac.new_vaccinations,
+    SUM(CAST(vac.new_vaccinations as int)) OVER (PARTITION BY dea.location Order by dea.location, dea.Date) as Rolling_Vaccinations
+    FROM Capstone_Covid..Death_Covid$ dea
+    JOIN Capstone_Covid..Vaccinations_Covid$ vac
+    ON dea.location = vac.location
+     and dea.date = vac.date
+    
+     where dea.continent is not null --and dea.location = 'Canada'
+       --order by 1,2,3
+    
+       SELECT *, (Rolling_Vaccinations/Population)*100
+    FROM  #PercentVaccinatedPop
+    
+    
+    --create views
+    
+    Create View Percentdeathdate as
+    
+    
+    
+    SELECT date, SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths,
+    SUM(cast(new_deaths as int)) / SUM(new_cases)*100 as death_percent
+    
+    FROM Capstone_Covid..Death_Covid$
+    WHERE continent is not null
+    GROUP BY date
+    --order by 1,2
+    
+</code>
+</pre>
+<p class="lead pb-3" data-aos="fade-left">
+    <ul>
+ <li>Just one of the many outcomes:</li>
+</p>
+                <img src="images/example1.png">
+
+
+
+               
+            </div>
+               
+            <div class="column large-12" style="padding-top: 40px;">
+                <div class="section-title-2" data-num="" data-aos="fade-up">
+                    <h5>Visualize</h5>
+                </div>
+                <p class="lead" data-aos="fade-right">
+                   Dashboard available <a href="https://public.tableau.com/app/profile/odimaa.allen/viz/Covid19Dashboard_16255959113550/Dashboard1">here.</a>
+                  Charts done with Tableau:
+
+                </p>
+
+ <div class="row">
+            <div class="column large-6">
+                <img src="images/Sheet2.png">
+                </div>
+
+                <div class="column large-6">
+                    <img src="images/Sheet1.png">
+
+                </div>
+                </div>
+                 
+ 
+            </div>
+            
+        </div>
+
+     
+
+    </section> <!-- end s-about -->
+  
+
+
+ 
+    <!-- Java Script
+    ================================================== -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>
