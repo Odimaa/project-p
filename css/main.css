@@ -20,6 +20,8 @@ body {
 	font: 16px/30px "merriweather-regular", serif;
 	font-weight: normal;
 	color: #575859;
+	text-align: justify;
+
 }
 
 /* links 
@@ -1108,6 +1110,7 @@ ul#nav li.current a:after {
 @media only screen and (max-width:600px) {
 	.hero-content {
 		padding-bottom: 72px;
+		padding-left: 4px;
 	}
 
 	#hero-slider {
@@ -1127,8 +1130,13 @@ ul#nav li.current a:after {
 		font: 15px/1.9 "merriweather-light", sans-serif;
 		width: 90%;
 	}
+ 
+
 
 }
+
+
+
 
 @media only screen and (max-width:480px) {
 	.hero-content {
@@ -1221,7 +1229,7 @@ ul#nav li.current a:after {
 /* more link */
 #hero #more {
 	position: absolute;
-	left: 40%;
+	left: 20%;
 	bottom: -27px;
 }
 
